@@ -1,0 +1,13 @@
+django
+django-allauth
+django-cors-headers
+django-rest-auth
+djangorestframework
+django-crispy-forms
+django-debug-toolbar
+django-environ
+dj-database-url
+psycopg2
+pyjwt
+sendgrid
+

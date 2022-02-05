@@ -1,0 +1,30 @@
+version: "3"
+services:
+  db:
+    container_name: survey-db
+    image: postgres:13
+    volumes:
+      - survey-db:/var/lib/postgresql/data
+    restart: always
+    environment:
+      - POSTGRES_USER=surveyuser
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=survey
+    ports:
+      - 5434:5432
+  backend:
+    container_name: survey-backend
+    build: ./backend
+    command: >
+      sh -c "python manage.py makemigrations &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./backend:/app/
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+volumes:
+  survey-db:
+    driver: local

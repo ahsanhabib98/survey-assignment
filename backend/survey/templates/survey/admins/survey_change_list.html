@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">My Surveyes</li>
+    </ol>
+  </nav>
+  <h2 class="mb-3">My Surveyes</h2>
+  <a href="{% url 'admins:survey_add' %}" class="btn btn-primary mb-3" role="button">Add survey</a>
+  <div class="card">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>Survey</th>
+          <th>Questions</th>
+          <th>Taken</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for survey in surveyes %}
+          <tr>
+            <td class="align-middle"><a href="{% url 'admins:survey_change' survey.pk %}">{{ survey.name }}</a></td>
+            <td class="align-middle">{{ survey.questions_count }}</td>
+            <td class="align-middle">{{ survey.taken_count }}</td>
+            <td class="text-right">
+              <a href="{% url 'admins:survey_results' survey.pk %}" class="btn btn-primary">View results</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td class="bg-light text-center font-italic" colspan="5">You haven't created any survey yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

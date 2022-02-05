@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% include 'survey/customers/_header.html' with active='new' %}
+  <div class="card">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>Quiz</th>
+          <th>Length</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for survey in surveyes %}
+          <tr>
+            <td class="align-middle">{{ survey.name }}</td>
+            <td class="align-middle">{{ survey.questions_count }} questions</td>
+            <td class="text-right">
+              <a href="{% url 'customers:take_survey' survey.pk %}" class="btn btn-primary">Start survey</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

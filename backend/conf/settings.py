@@ -11,7 +11,7 @@ env = environ.Env(DEBUG=(bool, False))
 env_file = os.path.join(BASE_DIR, ".env")
 environ.Env.read_env(env_file)
 
-AUTH_USER_MODEL = 'user.User'
+AUTH_USER_MODEL = 'survey.User'
 SECRET_KEY = env('SECRET_KEY')
 DEBUG = env('DEBUG', default=(bool, True))
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(',')
@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'crispy_forms',
 
     # project
-    'user',
+    'survey',
 ]
 
 SITE_ID = 1
@@ -153,3 +153,19 @@ if DEBUG:
         '127.0.0.1',
         'localhost',
     ]
+
+# Messages built-in framework
+
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-secondary',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
+
+
+# Third party apps configuration
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+

@@ -1,13 +1,11 @@
-django
-django-allauth
-django-cors-headers
-django-rest-auth
-djangorestframework
-django-crispy-forms
+django==2.2
+django-allauth==0.37.1
+django-cors-headers==2.4.0
+django-rest-auth==0.9.3
+djangorestframework==3.9.1
+django-crispy-forms==1.7.0
 django-debug-toolbar
 django-environ
 dj-database-url
-psycopg2
-pyjwt
-sendgrid
+psycopg2==2.8.6
 

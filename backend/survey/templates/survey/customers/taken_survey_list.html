@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  {% include 'survey/customers/_header.html' with active='taken' %}
+  <div class="card">
+    <table class="table mb-0">
+      <thead>
+        <tr>
+          <th>Survey</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for taken_survey in taken_surveyes %}
+          <tr>
+            <td>{{ taken_survey.survey.name }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td class="bg-light text-center font-italic" colspan="3">You haven't completed any survey yet.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}

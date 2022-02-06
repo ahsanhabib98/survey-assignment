@@ -38,10 +38,15 @@ cd survey-assignment
 docker-compose build
 docker-compose up
 ```
+If you get any issue like TCP/IP connections then again continue re-run
+
+```sh
+docker-compose up
+```
 After waiting for while, visit following urls:
 
 * UI: http://localhost:8000
-* API documentation: https://documenter.getpostman.com/view/8714749/UVeGrRMH#4ba8f662-2d71-4258-9672-db0066a3a3d6
+* API documentation: [API collection](https://documenter.getpostman.com/view/8714749/UVeGrRMH#4ba8f662-2d71-4258-9672-db0066a3a3d6)
 
 ## Git branching model
 I follow Git Flow as my branching model.

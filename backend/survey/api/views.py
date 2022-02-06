@@ -1,12 +1,22 @@
 from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.status import (
-    HTTP_201_CREATED,
-    HTTP_400_BAD_REQUEST
-)
+from django.shortcuts import get_object_or_404
 
-from ..models import User, Survey
-from .serializers import UserSerializer, SurveySerializer
+
+from ..models import (
+    User, 
+    Survey, 
+    Question, 
+    Customer,
+    Answer,
+    CustomerAnswer,
+    TakenSurvey)
+from .serializers import (
+    UserSerializer, 
+    SurveySerializer, 
+    QuestionSerializer, 
+    AnswerSerializer,
+    QuestionAnswerSerializer,
+    CustomerAnswerSerializer)
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -17,11 +27,41 @@ class UserViewSet(viewsets.ModelViewSet):
 class SurveyViewSet(viewsets.ModelViewSet):
     serializer_class = SurveySerializer
     queryset = Survey.objects.all()
+    
+
+class QuestionViewSet(viewsets.ModelViewSet):
+    serializer_class = QuestionSerializer
+    queryset = Question.objects.all()
+
+
+class AnswerViewSet(viewsets.ModelViewSet):
+    serializer_class = AnswerSerializer
+    queryset = Answer.objects.all()
+
+
+class AnswerViewSet(viewsets.ModelViewSet):
+    serializer_class = AnswerSerializer
+    queryset = Answer.objects.all()
+
+
+class QuestionAnswerViewSet(viewsets.ModelViewSet):
+    serializer_class = QuestionAnswerSerializer
+    queryset = TakenSurvey.objects.all()
+    http_method_names = ['get',]
+
+
+class CustomerAnswerViewSet(viewsets.ModelViewSet):
+    serializer_class = CustomerAnswerSerializer
+    queryset = CustomerAnswer.objects.all()
 
     def create(self, request):
-        serializer = SurveySerializer(data=request.data)
-        if serializer.is_valid():
-            survey = serializer.create(request)
-            if survey:
-                return Response(status=HTTP_201_CREATED)
-        return Response(status=HTTP_400_BAD_REQUEST)
+        customer = request.data.get('customer')
+        answer = request.data.get('answer')
+        customer = get_object_or_404(Customer, pk=customer)
+        survey = get_object_or_404(Answer, pk=answer).question.survey
+        customer.surveyes.add(survey)
+        TakenSurvey.objects.create(
+                                    customer=customer,
+                                    survey=survey
+                                )
+        return super().create(request)

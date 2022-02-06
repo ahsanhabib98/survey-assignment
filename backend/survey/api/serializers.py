@@ -3,7 +3,14 @@ from rest_auth.registration.serializers import RegisterSerializer
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 
-from ..models import User, Survey, Question, Answer
+from ..models import (
+    User, 
+    Survey, 
+    Question, 
+    Answer,
+    Customer,
+    CustomerAnswer,
+    TakenSurvey)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -37,6 +44,7 @@ class CustomRegisterSerializer(RegisterSerializer):
         user.is_customer = self.cleaned_data.get('is_customer')
         user.is_admin = self.cleaned_data.get('is_admin')
         user.save()
+        Customer.objects.create(user=user)
         adapter.save_user(request, user, self)
         return user
 
@@ -61,7 +69,6 @@ class TokenSerializer(serializers.ModelSerializer):
 
 
 class AnswerSerializer(serializers.ModelSerializer):
-    answers = serializers.SerializerMethodField()
 
     class Meta:
         model = Answer
@@ -73,7 +80,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Question
-        fields = ('id', 'survey', 'answer_type', 'text', 'answer')
+        fields = ('id', 'survey', 'answer_type', 'text', 'answers')
 
     def get_answers(self, obj):
         answers = AnswerSerializer(obj.answers.all(), many=True).data
@@ -82,7 +89,6 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 class SurveySerializer(serializers.ModelSerializer):
     questions = serializers.SerializerMethodField()
-    owner = UserSerializer()
 
     class Meta:
         model = Survey
@@ -91,3 +97,56 @@ class SurveySerializer(serializers.ModelSerializer):
     def get_questions(self, obj):
         questions = QuestionSerializer(obj.questions.all(), many=True).data
         return questions
+
+
+class TempQuestionSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Question
+        fields = ('id', 'text')
+
+
+class TempAnswerSerializer(serializers.ModelSerializer):
+    answer = AnswerSerializer()
+    question = serializers.SerializerMethodField()
+
+    class Meta:
+        model = CustomerAnswer
+        fields = ('id', 'answer', 'question')
+
+    def get_question(self, obj):
+        question = TempQuestionSerializer(obj.answer.question).data
+        return question
+
+
+class TempSurveySerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Survey
+        fields = ('id', 'name')
+
+
+class QuestionAnswerSerializer(serializers.ModelSerializer):
+    answer = serializers.SerializerMethodField()
+    survey = TempSurveySerializer()
+    customer = serializers.SerializerMethodField()
+
+    class Meta:
+        model = TakenSurvey
+        fields = ('id', 'customer', 'survey', 'answer')
+
+    def get_answer(self, obj):
+        answer = TempAnswerSerializer(obj.customer.survey_answers.all(), many=True).data
+        return answer
+
+    def get_customer(self, obj):
+        answer = UserSerializer(obj.customer.user).data
+        return answer
+
+
+
+class CustomerAnswerSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CustomerAnswer
+        fields = '__all__'
